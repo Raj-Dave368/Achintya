@@ -27,9 +27,6 @@
 - Order Pizza Online
 - Set event and reminder on google calendar and also find the empty slot in my busy schedule 
 - Start Autosave
-- 
-
-
 
 
 
