@@ -17,9 +17,6 @@
 - Store information of our and our relatives and use it whenever required(Security and emergency. -> when we need some help of any human then we will end a msg “i need a help”)
 - Store information after encryption i.e. use cryptography
 - Make a Server and Share some files
-- 
-
-
 
 
 
