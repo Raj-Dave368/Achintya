@@ -18,6 +18,5 @@ def take_screenshot(cmd):
         
         else:
             pyautogui.screenshot("E:\\Achintya\\Images\\"+str(datetime.datetime.now()).replace(":","-")+".png")
-        #TODO: ^^^^ check dirctory of Achintya and then make folder named Image and save photo there
-
+            
 take_screenshot("")
