@@ -10,6 +10,7 @@ microphone = sr.Microphone()
 
 
 recognizer.pause_threshold = .7
+recognizer.operation_timeout = 15
 # -------------------------------------------------------
 
 def ListenCommand()->str:

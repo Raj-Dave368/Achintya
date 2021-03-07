@@ -41,7 +41,31 @@ services = build('calendar', 'v3', credentials=creds)
 
 import datetime
 now = datetime.datetime.utcnow().isoformat() + 'Z'
+print(now)
 # timeMin = is the time. events after this time will be selected in events().list()
-eventList = services.events().list(calendarId="primary", timeMin=now).execute()
-for i in eventList.get('items'):
-    print(i['start'].get('dateTime'))
+# print(dir(services.events()))
+# eventList = services.events().list(calendarId="primary", timeMin=now).execute()
+# for i in eventList.get('items'):
+#     print(i['start'].get('dateTime'))
+
+import pytz
+
+print(services.events().insert(calendarId='primary',body=
+    {
+        'summary' : 'Demo From Python',
+        #  way 1
+        # 'start': {'dateTime': datetime.datetime.utcnow().isoformat() + 'Z'},
+        # 'end': {'dateTime': (datetime.datetime.utcnow() + datetime.timedelta(hours=5)).isoformat() + 'Z'}
+        # 'Z' - It is indicating UTC timeZone if you want your own local timezone then give end.timeZone but now you
+        # should remove + 'Z' otherwise it will produce an error
+
+        # way 2
+        # 'start': {'dateTime':(datetime.datetime(2021,3,8,3,00,00,00,)).isoformat(),'timeZone':"Asia/Kolkata"},
+        # 'end': {'dateTime': (datetime.datetime(2021,3,8,5,00,00,00,)).isoformat(),'timeZone':"Asia/Kolkata"},
+
+        # way 3
+        'start': {'dateTime': (datetime.datetime(2021, 3, 8, 13, 00, 00, 00).astimezone(tz=pytz.utc)).isoformat()},
+        'end': {'dateTime': (datetime.datetime(2021, 3, 8, 15, 00, 00, 00).astimezone(tz=pytz.utc)).isoformat()},
+    },
+
+).execute())
