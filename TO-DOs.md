@@ -1,13 +1,12 @@
 ✔ Open Applications (Raj)
-- Read Mails
-- Send Mails 
+- Read Mails & Send Mails (Raj) 
 - start audio / video recording and save it (Raj)
 ✔ start key logger (Shaishav)
 - open webistes / search on Google 
 - Play Music on YouTube / spotify (Raj)
 - Search files with their names
 - Shutdown PC
-- Listen in the background (Raj)
+✔ Listen in the background (Raj)
 - Search and Send file via email 
 - Create Thread for each Task (Raj)
 - Search file by its content
