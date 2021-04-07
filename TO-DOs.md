@@ -2,7 +2,7 @@
 - Read Mails
 - Send Mails 
 - start audio / video recording and save it (Raj)
-- start key logger 
+✔ start key logger (Shaishav)
 - open webistes / search on Google 
 - Play Music on YouTube / spotify (Raj)
 - Search files with their names
