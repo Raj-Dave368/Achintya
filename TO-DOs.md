@@ -1,7 +1,7 @@
-✔ Open Applications (Raj)
+- ✔ Open Applications (Raj)
 - Read Mails & Send Mails (Raj) 
 - start audio / video recording and save it (Raj)
-✔ start key logger (Shaishav)
+- ✔ start key logger (Shaishav)
 - open webistes / search on Google 
 - Play Music on YouTube / spotify (Raj)
 - Search files with their names
@@ -41,5 +41,5 @@
 
 
 
-
+ 
 
