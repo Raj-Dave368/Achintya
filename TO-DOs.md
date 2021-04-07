@@ -1,4 +1,4 @@
-- Open Applications (Raj)
+✔ Open Applications (Raj)
 - Read Mails
 - Send Mails 
 - start audio / video recording and save it (Raj)
