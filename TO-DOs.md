@@ -5,8 +5,8 @@
 - open webistes / search on Google 
 - Play Music on YouTube / spotify (Raj)
 - Search files with their names
-- Shutdown PC
-✔ Listen in the background (Raj)
+- ShutDown PC
+- Listen in the background (Raj)
 - Search and Send file via email 
 - Create Thread for each Task (Raj)
 - Search file by its content
