@@ -23,7 +23,7 @@
 	2. AI: pop-menu and take input (keywords, URL)
 	3. notification(plyer) 
 - Handle the laptop’s mouse and keyboard with the phone
-- Fetch text from Images
+- ✔ Fetch text from Images
 - Order Pizza Online
 - Set event and reminder on google calendar and also find the empty slot in my busy schedule 
 - Start Autosave
