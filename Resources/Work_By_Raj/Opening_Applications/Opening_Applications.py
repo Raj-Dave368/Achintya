@@ -3,12 +3,9 @@
 
 
 import os
-from Resources.UsedForBoth.text_to_speech import txt_to_speech
 
 
 def open_applications(cmd: str):
-    cmd = cmd.lower()
-
     if "open" not in cmd:
         txt_to_speech(txt="Not Able to Open An Application")
     try:
@@ -33,9 +30,10 @@ def open_applications(cmd: str):
         elif "notepad" in cmd:
             os.system("start notepad")
         else:
-            txt_to_speech("Not Able To Open an Application, Sorry!")
+            raise Exception("Not Able To Open an Application, Sorry!")
     except:
-        txt_to_speech("Not Able To Open an Application, Sorry!")
+        raise Exception("Not Able To Open an Application, Sorry!")
+
 
 
 if __name__ == '__main__':
