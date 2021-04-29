@@ -8,21 +8,19 @@ import pyttsx3
 from Resources.Work_By_Raj.Opening_Applications import Opening_Applications
 from Resources.Work_By_Raj.AutoSave import auto_save
 import threading
+import socket
+from Resources.UsedForBoth import text_to_speech
 
-engine = pyttsx3.init()
+from Resources.Work_By_Shaishav.Fetch_text_from_image import fetch_text_image
 
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
 
+
 recognizer.energy_threshold = 168
 recognizer.pause_threshold = .6
-recognizer.operation_timeout = 15
+recognizer.operation_timeout = 10
 # -------------------------------------------------------
-
-
-def sayAndWait(txt):
-    engine.say(txt)
-    engine.runAndWait()
 
 
 def run_cmd(cmd:str):
@@ -31,12 +29,16 @@ def run_cmd(cmd:str):
         try:
             Opening_Applications.open_applications(cmd)
         except Exception as e:
-            if engine._inLoop:
-                engine.endLoop()
-            threading.Thread(target=sayAndWait, args=(e,)).start()
-            # sayAndWait(e)
-    if "auto save" in cmd or "autosave" in cmd or "automatic save" in cmd:
-        auto_save.auto_save(cmd)
+            text_to_speech.sayAndWait(e)
+    if "start" in cmd and ("auto save" in cmd or "autosave" in cmd or "automatic save" in cmd):
+        auto_save.is_auto_save_on = True
+        thread = threading.Thread(target=auto_save.auto_save,args=(cmd,))
+        thread.start()
+    if "stop" in cmd and ("auto save" in cmd or "autosave" in cmd or "automatic save" in cmd):
+        auto_save.is_auto_save_on = False
+    if 'fetch text from an image' in cmd or 'fetch text from image' in cmd or "get text from an image" in cmd or  "get text from image" in cmd:
+        fetch_text_image.fetch_text_from_image(cmd)
+
 
 
 
@@ -54,15 +56,18 @@ def callback(recognizer, audio):
     except sr.UnknownValueError as e:
         print("*"*50)
         print("can not recognize")
-        print("e")
+        print(e)
         print("*" * 50)
     except sr.RequestError as e:
-        sayAndWait("No Internet Connection")
+        text_to_speech.sayAndWait("No Internet Connection")
     except sr.WaitTimeoutError as e:
         print("*"*50)
-        sayAndWait("Slow Internet Connection")
-        print("e")
+        text_to_speech.sayAndWait("Slow Internet Connection")
+        print(e)
         print("*" * 50)
+    except socket.timeout as e:
+        text_to_speech.sayAndWait("Slow Internet Connection")
+        print(e)
 
 
 def ListenInBackground():
@@ -74,5 +79,25 @@ def ListenInBackground():
         pass
 
 
-ListenInBackground()
+def Listen():
+    with microphone as mic:
+        audio = recognizer.listen(mic)
+        text = recognizer.recognize_google(audio)
+        return text
+
+
+def run():
+    while True:
+        try:
+            cmd = Listen()
+            print(cmd)
+            if cmd:
+                run_cmd(cmd)
+        except Exception as e:
+            print(e)
+
+
+# ListenInBackground()
+
+run_cmd("fetch text from an image")
 
