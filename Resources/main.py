@@ -12,6 +12,7 @@ import socket
 from Resources.UsedForBoth import text_to_speech
 
 from Resources.Work_By_Shaishav.Fetch_text_from_image import fetch_text_image
+# from Resources.Work_By_Shaishav
 
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
@@ -27,6 +28,7 @@ def run_cmd(cmd:str):
     cmd = cmd.lower()
     if "open" in cmd:
         try:
+
             Opening_Applications.open_applications(cmd)
         except Exception as e:
             text_to_speech.sayAndWait(e)
@@ -38,9 +40,6 @@ def run_cmd(cmd:str):
         auto_save.is_auto_save_on = False
     if 'fetch text from an image' in cmd or 'fetch text from image' in cmd or "get text from an image" in cmd or  "get text from image" in cmd:
         fetch_text_image.fetch_text_from_image(cmd)
-
-
-
 
 
 def callback(recognizer, audio):
