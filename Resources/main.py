@@ -1,45 +1,72 @@
 # 🚩 Dada Ki Jay Ho 🚩
 
 
-
 # Global Things ----------------------------------------
 import speech_recognition as sr
-import pyttsx3
-from Resources.Work_By_Raj.Opening_Applications import Opening_Applications
-from Resources.Work_By_Raj.AutoSave import auto_save
+import webbrowser as wb
 import threading
 import socket
+import time
+
+from Resources.Work_By_Raj.Opening_Applications import Opening_Applications
+from Resources.Work_By_Raj.AutoSave import auto_save
+from Resources.Work_By_Raj.Google_Calender_api.Resources import Return_events_info
+
 from Resources.UsedForBoth import text_to_speech
 
 from Resources.Work_By_Shaishav.Fetch_text_from_image import fetch_text_image
-# from Resources.Work_By_Shaishav
+from Resources.Work_By_Shaishav import OpenFolder
 
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
 
-
-recognizer.energy_threshold = 168
+recognizer.energy_threshold = 6688
 recognizer.pause_threshold = .6
 recognizer.operation_timeout = 10
+
+
 # -------------------------------------------------------
 
 
-def run_cmd(cmd:str):
-    cmd = cmd.lower()
-    if "open" in cmd:
-        try:
+def welcome():
+    text_to_speech.sayAndWait("Welcome Sir!")
+    text_to_speech.sayAndWait("I am Your Virtual Assistant")
+    Return_events_info.say_event_details("how many events do I have today")
 
+
+def run_cmd(cmd: str):
+    cmd = cmd.lower()
+    if "search" in cmd:
+        thing_to_search = cmd[len("search "):]
+        wb.open("https://www.google.com/search?q=" + thing_to_search)
+    if "open " in cmd and "drive" not in cmd and "folder" not in cmd:
+        try:
             Opening_Applications.open_applications(cmd)
         except Exception as e:
             text_to_speech.sayAndWait(e)
-    if "start" in cmd and ("auto save" in cmd or "autosave" in cmd or "automatic save" in cmd):
+    if "open" in cmd and ("drive" in cmd or "folder" in cmd):
+        OpenFolder.open_folder(cmd)
+    if ("start" in cmd or "turn on" in cmd) and ("auto save" in cmd or "autosave" in cmd or "automatic save" in cmd):
         auto_save.is_auto_save_on = True
-        thread = threading.Thread(target=auto_save.auto_save,args=(cmd,))
+        thread = threading.Thread(target=auto_save.show_auto_save_window)
         thread.start()
-    if "stop" in cmd and ("auto save" in cmd or "autosave" in cmd or "automatic save" in cmd):
-        auto_save.is_auto_save_on = False
-    if 'fetch text from an image' in cmd or 'fetch text from image' in cmd or "get text from an image" in cmd or  "get text from image" in cmd:
-        fetch_text_image.fetch_text_from_image(cmd)
+        # auto_save.auto_save(cmd)
+    if "how many events do i have today" in cmd or ("event" in cmd and "for today" in cmd):
+        text_to_speech.sayAndWait("Just wait Please")
+        thread = threading.Thread(target=Return_events_info.say_event_details,
+                                  args=("how many events do i have today",))
+        thread.start()
+
+    if "how many events do i have tomorrow" in cmd or ("event" in cmd and "for tomorrow" in cmd):
+        text_to_speech.sayAndWait("Just wait Please")
+        thread = threading.Thread(target=Return_events_info.say_event_details,
+                                  args=("how many events do i have tomorrow",))
+        thread.start()
+
+    if 'fetch text from an image' in cmd or 'fetch text from image' in cmd or "get text from an image" in cmd or "get text from image" in cmd \
+            or 'text from image' in cmd or 'text from an image' in cmd:
+        thread = threading.Thread(target=fetch_text_image.fetch_text_from_image)
+        thread.run()
 
 
 def callback(recognizer, audio):
@@ -48,19 +75,18 @@ def callback(recognizer, audio):
     # sr.RequestError
     try:
         text = recognizer.recognize_google(audio)
-        print("CMD: "+text)
-        # TODO: Use Thread here for calling run_cmd(cmd)
-        run_cmd(text)
-
+        print("CMD: " + text)
+        thread = threading.Thread(target=run_cmd, args=(text,))
+        thread.run()
     except sr.UnknownValueError as e:
-        print("*"*50)
+        print("*" * 50)
         print("can not recognize")
         print(e)
         print("*" * 50)
     except sr.RequestError as e:
         text_to_speech.sayAndWait("No Internet Connection")
     except sr.WaitTimeoutError as e:
-        print("*"*50)
+        print("*" * 50)
         text_to_speech.sayAndWait("Slow Internet Connection")
         print(e)
         print("*" * 50)
@@ -71,32 +97,14 @@ def callback(recognizer, audio):
 
 def ListenInBackground():
     print("You can speak now, we are listening in background")
+    print("🚩 " * 36)
 
-    stop_listening = recognizer.listen_in_background(microphone, callback)
+    stop_listening = recognizer.listen_in_background(microphone, callback, phrase_time_limit=5)
     # when stop_listening will call the recognizer will stop listening background
+
     while True:
         pass
 
 
-def Listen():
-    with microphone as mic:
-        audio = recognizer.listen(mic)
-        text = recognizer.recognize_google(audio)
-        return text
-
-
-def run():
-    while True:
-        try:
-            cmd = Listen()
-            print(cmd)
-            if cmd:
-                run_cmd(cmd)
-        except Exception as e:
-            print(e)
-
-
-# ListenInBackground()
-
-run_cmd("fetch text from an image")
-
+# welcome()
+ListenInBackground()

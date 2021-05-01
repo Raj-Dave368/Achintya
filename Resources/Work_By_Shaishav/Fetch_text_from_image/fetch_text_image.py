@@ -8,9 +8,7 @@ import time
 from tkinter.filedialog import askopenfilename
 from Resources.UsedForBoth import text_to_speech
 
-def fetch_text_from_image(cmd: str):
-    if 'fetch text from an image' in cmd or 'fetch text from image' in cmd or \
-        "get text from an image" in cmd or  "get text from image" in cmd:
+def fetch_text_from_image():
         root = tk.Tk()
         canvas1 = tk.Canvas(root, width=1368, height=568)
         canvas1.pack()
@@ -20,9 +18,12 @@ def fetch_text_from_image(cmd: str):
         entry1 = tk.Entry(root)
         canvas1.create_window(236, 120, width=256, window=entry1)
 
-        def get_Path_and_fetch_text():
-            text_to_speech.sayAndWait("Please, Wait For a While")
-            img = entry1.get()
+        def select_a_file():
+            filepath = askopenfilename()  # show an "Open" dialog box and return the path to the selected file
+            entry1.insert(0, filepath)
+            print("Selcted File Is: " + filepath)
+
+            img = filepath
             reader = easyocr.Reader(['en'])
             results = reader.readtext(img)
             # print(results)
@@ -36,13 +37,6 @@ def fetch_text_from_image(cmd: str):
             label1 = tk.Label(root, text="Text Has Been Copied To the Clipboard")
             canvas1.create_window(220, 220, window=label1)
 
-        def select_a_file():
-            filename = askopenfilename()  # show an "Open" dialog box and return the path to the selected file
-            print("Selcted File Is: " + filename)
-            entry1.insert(0, filename)
-            time.sleep(1)
-            get_Path_and_fetch_text()
-
         w = tk.Text(root, height=20, width=68)
         canvas1.create_window(768, 236, window=w)
 
@@ -53,5 +47,5 @@ def fetch_text_from_image(cmd: str):
         root.mainloop()
 
 if __name__ == '__main__':
-    fetch_text_from_image("fetch text from an image")
+    fetch_text_from_image()
 

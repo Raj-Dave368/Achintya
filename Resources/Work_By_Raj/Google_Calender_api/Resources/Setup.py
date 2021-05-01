@@ -6,19 +6,19 @@
 from googleapiclient import discovery
 
 
-def setup_calendar_credentials_return_service()->discovery.Resource:
+def setup_calendar_credentials_return_service():
     import os.path
 
-    if os.path.exists('../token.json'):
-        os.remove('../token.json')
+    if os.path.exists(r'F:\oMNS sem-6 clg\Achintya\Resources\Work_By_Raj\Google_Calender_api\token.json'):
+        os.remove(r'F:\oMNS sem-6 clg\Achintya\Resources\Work_By_Raj\Google_Calender_api\token.json')
 
 
     from google_auth_oauthlib.flow import InstalledAppFlow
     SCOPE = ['https://www.googleapis.com/auth/calendar']
-    flow = InstalledAppFlow.from_client_secrets_file('../credentials.json',scopes=SCOPE)
+    flow = InstalledAppFlow.from_client_secrets_file(r'F:\oMNS sem-6 clg\Achintya\Resources\Work_By_Raj\Google_Calender_api\credentials.json',scopes=SCOPE)
     creds = flow.run_local_server(port=0)
 
-    with open('../token.json', 'w') as token_file:
+    with open(r'F:\oMNS sem-6 clg\Achintya\Resources\Work_By_Raj\Google_Calender_api\token.json', 'w') as token_file:
         token_file.write(creds.to_json())
         print('Tokens Created and Stored Successfully')
 

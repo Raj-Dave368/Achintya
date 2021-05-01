@@ -14,11 +14,11 @@ SCOPE = ['https://www.googleapis.com/auth/calendar']
 # step1: initialize creds from Credentials.from_authorized_user_file(../token.json)
 creds = None
 
-if os.path.exists('../token.json'):
-    creds = Credentials.from_authorized_user_file('../token.json')
+if os.path.exists(r'F:\oMNS sem-6 clg\Achintya\Resources\Work_By_Raj\Google_Calender_api\token.json'):
+    creds = Credentials.from_authorized_user_file(r'F:\oMNS sem-6 clg\Achintya\Resources\Work_By_Raj\Google_Calender_api\token.json')
 else:
     from Resources.Work_By_Raj.Google_Calender_api.Resources import Setup
-    Setup.setup_calendar_credentials()
+    Setup.setup_calendar_credentials_return_service()
 
 # step2: initialize service from discovery.build
 service = discovery.build('calendar', 'v3', credentials=creds)
@@ -130,54 +130,56 @@ def return_events_info(cmd: str, service):
         return filtered_events,cmd
 #
 
+def say_event_details(cmd):
+    filtered_events, cmd = return_events_info(cmd, service=service)
 
-filtered_events, cmd = return_events_info("how many events do I have tomorrow", service=service)
-
-
-import pyttsx3
-engine = pyttsx3.init()
-engine.setProperty('rate', 186)
-
-
-if 'have on ' in cmd:
-    what_date_user_asked = cmd[cmd.find('have on ')+4+4:]
-elif 'had on ' in cmd:
-    what_date_user_asked = cmd[cmd.find('had on ')+3+4:]
-elif 'have ' in cmd:
-    what_date_user_asked = cmd[cmd.find('have ')+4+1:]
-else:
-    what_date_user_asked = cmd[cmd.find('had ')+3+1:]
+    import pyttsx3
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 186)
 
 
-if len(filtered_events) == 0:
-    print(f"you don't have any events for {what_date_user_asked}")
-    engine.say(f"you don't have any events for {what_date_user_asked}")
-    engine.runAndWait()
-elif len(filtered_events) <= 7:
-    print(f"you have {len(filtered_events)} events for {what_date_user_asked}!")
-    engine.say(f"you have {len(filtered_events)} events for {what_date_user_asked} !")
-    engine.runAndWait()
-else:
-    print(f"you have so many events for {what_date_user_asked} as displayed")
-    engine.say(f"you have so many events for {what_date_user_asked} as displayed")
-    engine.runAndWait()
+    if 'have on ' in cmd:
+        what_date_user_asked = cmd[cmd.find('have on ')+4+4:]
+    elif 'had on ' in cmd:
+        what_date_user_asked = cmd[cmd.find('had on ')+3+4:]
+    elif 'have ' in cmd:
+        what_date_user_asked = cmd[cmd.find('have ')+4+1:]
+    else:
+        what_date_user_asked = cmd[cmd.find('had ')+3+1:]
 
-if len(filtered_events) <= 7:
-    for number, each in zip(range(1, len(filtered_events)+1), filtered_events):
-        achintya_speakable_format = str(number) + "! " + each[0] + ", at, " + str(each[1][0]) + " "
-        if str(each[1][1]) != '0':
-            achintya_speakable_format += str(each[1][1])
-        achintya_speakable_format += " " + str(each[1][2]) + '!'
-        if each[-1][0] > 0:
-            achintya_speakable_format += f"Which is {each[-1][0]} hours"
-            if each[-1][1] > 0:
-                achintya_speakable_format += f"and {each[-1][1]} minutes long"
-            else:
-                achintya_speakable_format += "long"
-        else:
-            achintya_speakable_format += f"Which is {each[-1][1]} minutes long"
-        engine.say(achintya_speakable_format)
+
+    if len(filtered_events) == 0:
+        print(f"you don't have any events for {what_date_user_asked}")
+        engine.say(f"you don't have any events for {what_date_user_asked}")
         engine.runAndWait()
-        from time import sleep
-        sleep(1)
-#
+    elif len(filtered_events) <= 7:
+        print(f"you have {len(filtered_events)} events for {what_date_user_asked}!")
+        engine.say(f"you have {len(filtered_events)} events for {what_date_user_asked} !")
+        engine.runAndWait()
+    else:
+        print(f"you have so many events for {what_date_user_asked} as displayed")
+        engine.say(f"you have so many events for {what_date_user_asked} as displayed")
+        engine.runAndWait()
+
+    if len(filtered_events) <= 7:
+        for number, each in zip(range(1, len(filtered_events)+1), filtered_events):
+            achintya_speakable_format = str(number) + " " + each[0] + ", at, " + str(each[1][0]) + " "
+            if str(each[1][1]) != '0':
+                achintya_speakable_format += str(each[1][1])
+            achintya_speakable_format += " " + str(each[1][2]) + '!'
+            if each[-1][0] > 0:
+                achintya_speakable_format += f"Which is {each[-1][0]} hours"
+                if each[-1][1] > 0:
+                    achintya_speakable_format += f"and {each[-1][1]} minutes long"
+                else:
+                    achintya_speakable_format += "long"
+            else:
+                achintya_speakable_format += f"Which is {each[-1][1]} minutes long"
+            engine.say(achintya_speakable_format)
+            engine.runAndWait()
+            from time import sleep
+            sleep(1)
+
+
+if __name__ == '__main__':
+    say_event_details("how many events do i have today")
