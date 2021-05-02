@@ -6,8 +6,12 @@ import speech_recognition as sr
 import webbrowser as wb
 import threading
 import socket
+import easyocr
+import tkinter as tk
+import pyperclip
 import time
 
+from tkinter.filedialog import askopenfilename
 from Resources.Work_By_Raj.Opening_Applications import Opening_Applications
 from Resources.Work_By_Raj.AutoSave import auto_save
 from Resources.Work_By_Raj.Google_Calender_api.Resources import Return_events_info
@@ -20,7 +24,7 @@ from Resources.Work_By_Shaishav import OpenFolder
 recognizer = sr.Recognizer()
 microphone = sr.Microphone()
 
-recognizer.energy_threshold = 6688
+recognizer.energy_threshold = 668
 recognizer.pause_threshold = .6
 recognizer.operation_timeout = 10
 
@@ -31,7 +35,7 @@ recognizer.operation_timeout = 10
 def welcome():
     text_to_speech.sayAndWait("Welcome Sir!")
     text_to_speech.sayAndWait("I am Your Virtual Assistant")
-    Return_events_info.say_event_details("how many events do I have today")
+    # Return_events_info.say_event_details("how many events do I have today")
 
 
 def run_cmd(cmd: str):
@@ -51,24 +55,16 @@ def run_cmd(cmd: str):
         thread = threading.Thread(target=auto_save.show_auto_save_window)
         thread.start()
         # auto_save.auto_save(cmd)
-    if "how many events do i have today" in cmd or ("event" in cmd and "for today" in cmd):
+    if "upcoming" in cmd and "event" in cmd:
         text_to_speech.sayAndWait("Just wait Please")
         thread = threading.Thread(target=Return_events_info.say_event_details,
                                   args=("how many events do i have today",))
         thread.start()
 
-    if "how many events do i have tomorrow" in cmd or ("event" in cmd and "for tomorrow" in cmd):
-        text_to_speech.sayAndWait("Just wait Please")
-        thread = threading.Thread(target=Return_events_info.say_event_details,
-                                  args=("how many events do i have tomorrow",))
-        thread.start()
-
     if 'fetch text from an image' in cmd or 'fetch text from image' in cmd or "get text from an image" in cmd or "get text from image" in cmd \
             or 'text from image' in cmd or 'text from an image' in cmd:
         thread = threading.Thread(target=fetch_text_image.fetch_text_from_image)
-        thread.run()
-
-
+        thread.start()
 def callback(recognizer, audio):
     # it can throw below error(s), so you have to handle it in your main.py or some other file whenever you call this function
     # sr.UnknownValueError
@@ -77,7 +73,7 @@ def callback(recognizer, audio):
         text = recognizer.recognize_google(audio)
         print("CMD: " + text)
         thread = threading.Thread(target=run_cmd, args=(text,))
-        thread.run()
+        thread.start()
     except sr.UnknownValueError as e:
         print("*" * 50)
         print("can not recognize")
@@ -106,5 +102,5 @@ def ListenInBackground():
         pass
 
 
-# welcome()
+welcome()
 ListenInBackground()

@@ -6,8 +6,6 @@ import os
 
 
 def open_applications(cmd: str):
-    if "open" not in cmd:
-        txt_to_speech(txt="Not Able to Open An Application")
     try:
         if "chrome" in cmd:
             os.system("start chrome")
@@ -37,5 +35,5 @@ def open_applications(cmd: str):
 
 
 if __name__ == '__main__':
-    open_applications("open excel")
+    open_applications("open calculator")
 

@@ -76,9 +76,7 @@ def return_events_info(cmd: str, service):
     if date_of_event:
         calenderList = service.events().list(calendarId='primary',
                                              timeMin=date_of_event.astimezone(pytz.timezone('Asia/kolkata')).isoformat(),
-                                             timeMax=(date_of_event +
-                                                      datetime.timedelta(hours=23,)).astimezone(pytz.timezone('Asia/kolkata')).isoformat(),
-                                             maxResults=7,
+                                             maxResults=4,
                                              singleEvents=True,
                                              orderBy='startTime'
                                              ).execute()
@@ -153,8 +151,8 @@ def say_event_details(cmd):
         engine.say(f"you don't have any events for {what_date_user_asked}")
         engine.runAndWait()
     elif len(filtered_events) <= 7:
-        print(f"you have {len(filtered_events)} events for {what_date_user_asked}!")
-        engine.say(f"you have {len(filtered_events)} events for {what_date_user_asked} !")
+        print(f"your {len(filtered_events)} upcoming events are")
+        engine.say(f"your {len(filtered_events)} upcoming events are!")
         engine.runAndWait()
     else:
         print(f"you have so many events for {what_date_user_asked} as displayed")
