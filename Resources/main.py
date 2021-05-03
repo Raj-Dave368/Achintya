@@ -5,16 +5,13 @@
 import speech_recognition as sr
 import webbrowser as wb
 import threading
+import pyautogui
 import socket
-import easyocr
-import tkinter as tk
-import pyperclip
-import time
+import os
 
-from tkinter.filedialog import askopenfilename
 from Resources.Work_By_Raj.Opening_Applications import Opening_Applications
 from Resources.Work_By_Raj.AutoSave import auto_save
-from Resources.Work_By_Raj.Google_Calender_api.Resources import Return_events_info
+# from Resources.Work_By_Raj.Google_Calender_api.Resources import Return_events_info
 
 from Resources.UsedForBoth import text_to_speech
 
@@ -60,12 +57,23 @@ def run_cmd(cmd: str):
         thread = threading.Thread(target=Return_events_info.say_event_details,
                                   args=("how many events do i have today",))
         thread.start()
+    if "turn off computer" in cmd or "switch off" in cmd:
+        os.system("shutdown /s /t 1")
 
     if 'fetch text from an image' in cmd or 'fetch text from image' in cmd or "get text from an image" in cmd or "get text from image" in cmd \
             or 'text from image' in cmd or 'text from an image' in cmd:
         thread = threading.Thread(target=fetch_text_image.fetch_text_from_image)
         thread.start()
+
+    if "take a screen shot" in cmd or "take screen shot" in cmd or "take a screenshot" in cmd or "take screenshot" in cmd:
+        pyautogui.screenshot("C://users//rajda//Desktop//hello.jpg")
+
+import tkinter as tk
+
+frame = tk.Tk()
+
 def callback(recognizer, audio):
+    frame.destroy()
     # it can throw below error(s), so you have to handle it in your main.py or some other file whenever you call this function
     # sr.UnknownValueError
     # sr.RequestError
@@ -94,6 +102,8 @@ def callback(recognizer, audio):
 def ListenInBackground():
     print("You can speak now, we are listening in background")
     print("🚩 " * 36)
+    thread = threading.Thread(target=lambda : frame.mainloop)
+    thread.start()
 
     stop_listening = recognizer.listen_in_background(microphone, callback, phrase_time_limit=5)
     # when stop_listening will call the recognizer will stop listening background
@@ -102,5 +112,71 @@ def ListenInBackground():
         pass
 
 
-welcome()
-ListenInBackground()
+from pynput import keyboard
+from plyer import notification
+
+
+def on_press(i):
+    print(i)
+    print(dir(i))
+    print(str(type(i)) == "<enum 'Key'>")
+    if str(type(i)) == "<enum 'Key'>" and i.name == "esc":
+        with microphone as mic:
+            print("You can speak now, we are listening in background")
+            print("🚩 " * 36)
+            notification.notify("Listening ...", "You can speak now ...", timeout=3)
+            audio = recognizer.listen(mic, phrase_time_limit=5)
+            try:
+                text = recognizer.recognize_google(audio)
+                print("CMD: " + text)
+                thread = threading.Thread(target=run_cmd, args=(text,))
+                thread.start()
+            except sr.UnknownValueError as e:
+                print("*" * 50)
+                print("can not recognize")
+                print(e)
+                print("*" * 50)
+            except sr.RequestError as e:
+                text_to_speech.sayAndWait("No Internet Connection")
+            except sr.WaitTimeoutError as e:
+                print("*" * 50)
+                text_to_speech.sayAndWait("Slow Internet Connection")
+                print(e)
+                print("*" * 50)
+            except socket.timeout as e:
+                text_to_speech.sayAndWait("Slow Internet Connection")
+                print(e)
+
+
+with keyboard.Listener(on_press=on_press) as listener:
+    listener.join()
+
+
+# with microphone as mic:
+#     while True:
+#         print("You can speak now, we are listening in background")
+#         print("🚩 " * 36)
+#         audio = recognizer.listen(mic, phrase_time_limit=5)
+#         try:
+#             text = recognizer.recognize_google(audio)
+#             print("CMD: " + text)
+#             thread = threading.Thread(target=run_cmd, args=(text,))
+#             thread.start()
+#         except sr.UnknownValueError as e:
+#             print("*" * 50)
+#             print("can not recognize")
+#             print(e)
+#             print("*" * 50)
+#         except sr.RequestError as e:
+#             text_to_speech.sayAndWait("No Internet Connection")
+#         except sr.WaitTimeoutError as e:
+#             print("*" * 50)
+#             text_to_speech.sayAndWait("Slow Internet Connection")
+#             print(e)
+#             print("*" * 50)
+#         except socket.timeout as e:
+#             text_to_speech.sayAndWait("Slow Internet Connection")
+#             print(e)
+
+# welcome()
+
