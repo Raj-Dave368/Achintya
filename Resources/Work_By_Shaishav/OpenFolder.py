@@ -3,6 +3,7 @@
 
 import os
 import webbrowser
+from Resources.UsedForBoth.text_to_speech import sayAndWait
 
 path = ""
 def open_folder(cmd:str):
@@ -16,12 +17,16 @@ def open_folder(cmd:str):
             path += drive_name + ":/"
             if os.path.isdir(path):
                 webbrowser.open(path)
+            else:
+                sayAndWait("No such drive is available")
         else:
             cmd = cmd.replace("folder", "")
             folder_name = cmd[5:].strip()
             path += folder_name + "/"
             if os.path.isdir(path):
                 webbrowser.open(path)
+            else:
+               sayAndWait("No such folder is available")
         print(path)
 
 
