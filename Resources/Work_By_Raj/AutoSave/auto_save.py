@@ -56,7 +56,7 @@ def auto_save():
 
 def show_auto_save_window():
     # creating tkinter window
-    root = Tk()
+    root = Tk(screenName="AutoSave", baseName="Achintya", className="autosave")
     # Adding widgets to the root window
 
     # Creating a photoimage object to use image
@@ -77,3 +77,4 @@ def show_auto_save_window():
     Button(root, text='Click Me !', image=photo2, command=stop_func).grid(row=1, column=2)
 
     mainloop()
+

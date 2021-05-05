@@ -67,7 +67,9 @@ def run_cmd(cmd: str):
         thread.start()
 
     if "take a screen shot" in cmd or "take screen shot" in cmd or "take a screenshot" in cmd or "take screenshot" in cmd:
-        pyautogui.screenshot(f"C://users//rajda//Desktop//{str(datetime.datetime.now()).replace(':','-')}.jpg")
+        import getpass
+        username = getpass.getuser().strip()
+        pyautogui.screenshot(f"C://users//{username}//Desktop//{str(datetime.datetime.now()).replace(':','-')}.jpg")
 
 # def callback(recognizer, audio):
 #
@@ -112,42 +114,39 @@ def run_cmd(cmd: str):
 from pynput import keyboard
 from plyer import notification
 
-def listen():
-    with microphone as mic:
-        print("You can speak now, we are listening in background")
-        print("🚩 " * 36)
-        notification.notify("Listening ...", "You can speak now ...", timeout=1, toast=True)
-        audio = recognizer.listen(mic, phrase_time_limit=5)
-        try:
-            text = recognizer.recognize_google(audio)
-            print("CMD: " + text)
-            notification.notify("CMD:... ", text, timeout=1.2)
-            thread = threading.Thread(target=run_cmd, args=(text,))
-            thread.start()
-        except sr.UnknownValueError as e:
-            print("*" * 50)
-            print("can not recognize")
-            print(e)
-            print("*" * 50)
-        except sr.RequestError as e:
-            text_to_speech.sayAndWait("No Internet Connection")
-        except sr.WaitTimeoutError as e:
-            print("*" * 50)
-            text_to_speech.sayAndWait("Slow Internet Connection")
-            print(e)
-            print("*" * 50)
-        except socket.timeout as e:
-            text_to_speech.sayAndWait("Slow Internet Connection")
-            print(e)
-
-thread = threading.Thread(target=listen)
 def on_press(i):
-    thread.isDaemon()
-    print(i)
-    print(dir(i))
-    print(str(type(i)) == "<enum 'Key'>")
+    # print(i)
+    # print(dir(i))
+    # print(str(type(i)) == "<enum 'Key'>")
     if str(type(i)) == "<enum 'Key'>" and i.name == "esc":
-        thread.start()
+        with microphone as mic:
+            print("You can speak now, we are listening in background")
+            print("🚩 " * 36)
+            notification.notify("Listening ...", "You can speak now ...", timeout=1, toast=True)
+            try:
+                audio = recognizer.listen(mic, phrase_time_limit=5, timeout=4)
+                text = recognizer.recognize_google(audio)
+                print("CMD: " + text)
+                notification.notify("CMD:... ", text, timeout=1.2)
+                thread = threading.Thread(target=run_cmd, args=(text,))
+                thread.start()
+            except sr.WaitTimeoutError as e:
+                print(e)
+            except sr.UnknownValueError as e:
+                print("*" * 50)
+                print("can not recognize")
+                print(e)
+                print("*" * 50)
+            except sr.RequestError as e:
+                text_to_speech.sayAndWait("Problem in Internet Connection")
+            except socket.timeout as e:
+                text_to_speech.sayAndWait("Slow Internet Connection")
+                print(e)
+            except Exception as e:
+                print(e)
+            notification.notify("Free ...", "Waiting ...", timeout=1, toast=True)
+
+
 
 text_to_speech.sayAndWait("Hello Sir!")
 with keyboard.Listener(on_press=on_press) as listener:
