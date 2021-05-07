@@ -43,7 +43,18 @@ def return_events_info(cmd: str, service):
     import pytz
     date_of_event = None
     if "today" in cmd:
-        date_of_event = datetime.datetime.utcnow()
+        today = datetime.datetime.today()
+        str_date = str(today.day)
+        if len(str_date) == 1:
+            # we want date to have of two digit i.e. if date is 1 then we want 01 i.e. added 0 at the beginning
+            # if date is 11 then we want 11 i.e. no change here
+            str_date = '0' + str_date
+        str_month = str(today.month)
+        if len(str_month) == 1:
+            str_month = '0' + str_month
+        str_year = today.year
+        date_of_event = datetime.datetime.strptime(f"{str_date}-{str_month}-{str_year}T00:00:00",
+                                                   "%d-%m-%YT%H:%M:%S")
     elif "tomorrow" in cmd:
         today = datetime.datetime.today()
         str_date = str(today.day)
@@ -71,11 +82,11 @@ def return_events_info(cmd: str, service):
         date_of_event = datetime.datetime.strptime(f"{str_date}-{str_month}-{str_year}T00:00:00+05:30",
                                                    "%d-%B-%YT%H:%M:%S+05:30")
 
-
-
+    print(date_of_event)
     if date_of_event:
         calenderList = service.events().list(calendarId='primary',
                                              timeMin=date_of_event.astimezone(pytz.timezone('Asia/kolkata')).isoformat(),
+                                             timeMax=(date_of_event+datetime.timedelta(days=1)).astimezone(pytz.timezone('Asia/kolkata')).isoformat(),
                                              maxResults=4,
                                              singleEvents=True,
                                              orderBy='startTime'

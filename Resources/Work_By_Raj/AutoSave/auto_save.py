@@ -32,6 +32,7 @@ def stop_func():
     if not is_auto_save_on: text_to_speech.sayAndWait("Auto Saver Stopped")
 
 
+
 def auto_save():
     if is_auto_save_on: text_to_speech.sayAndWait("Hey, Starting Auto Saver")
     while is_auto_save_on:
@@ -55,10 +56,13 @@ def auto_save():
 
 
 def show_auto_save_window():
+
     # creating tkinter window
     root = Tk(screenName="AutoSave", baseName="Achintya", className="autosave")
     # Adding widgets to the root window
-
+    def stop_and_destroy():
+        if is_auto_save_on: stop_func()
+        root.destroy()
     # Creating a photoimage object to use image
     photo1 = Image.open(r"C:\Users\rajda\Downloads\start.png")
     photo1 = photo1.resize((200,168), Image.ANTIALIAS)
@@ -68,6 +72,7 @@ def show_auto_save_window():
     photo1 = ImageTk.PhotoImage(photo1)
     photo2 = ImageTk.PhotoImage(photo2)
 
+    root.protocol("WM_DELETE_WINDOW", stop_and_destroy)
     # here, image option is used to
     # set image on button
 
@@ -78,3 +83,7 @@ def show_auto_save_window():
 
     mainloop()
 
+
+
+if __name__ == '__main__':
+    show_auto_save_window()

@@ -16,6 +16,7 @@ from Resources.Work_By_Raj.Google_Calender_api.Resources import Return_events_in
 
 from Resources.UsedForBoth import text_to_speech
 
+from Resources.Work_By_Shaishav.Send_Email import Send_Achinya_started_email
 from Resources.Work_By_Shaishav.Fetch_text_from_image import fetch_text_image
 from Resources.Work_By_Shaishav import OpenFolder
 
@@ -71,45 +72,6 @@ def run_cmd(cmd: str):
         username = getpass.getuser().strip()
         pyautogui.screenshot(f"C://users//{username}//Desktop//{str(datetime.datetime.now()).replace(':','-')}.jpg")
 
-# def callback(recognizer, audio):
-#
-#     # it can throw below error(s), so you have to handle it in your main.py or some other file whenever you call this function
-#     # sr.UnknownValueError
-#     # sr.RequestError
-#     try:
-#         text = recognizer.recognize_google(audio)
-#         print("CMD: " + text)
-#         thread = threading.Thread(target=run_cmd, args=(text,))
-#         thread.start()
-#     except sr.UnknownValueError as e:
-#         print("*" * 50)
-#         print("can not recognize")
-#         print(e)
-#         print("*" * 50)
-#     except sr.RequestError as e:
-#         text_to_speech.sayAndWait("No Internet Connection")
-#     except sr.WaitTimeoutError as e:
-#         print("*" * 50)
-#         text_to_speech.sayAndWait("Slow Internet Connection")
-#         print(e)
-#         print("*" * 50)
-#     except socket.timeout as e:
-#         text_to_speech.sayAndWait("Slow Internet Connection")
-#         print(e)
-#
-#
-# def ListenInBackground():
-#     print("You can speak now, we are listening in background")
-#     print("🚩 " * 36)
-#     thread = threading.Thread(target=lambda : frame.mainloop)
-#     thread.start()
-#
-#     stop_listening = recognizer.listen_in_background(microphone, callback, phrase_time_limit=5)
-#     # when stop_listening will call the recognizer will stop listening background
-#
-#     while True:
-#         pass
-
 
 from pynput import keyboard
 from plyer import notification
@@ -127,7 +89,7 @@ def on_press(i):
                 audio = recognizer.listen(mic, phrase_time_limit=5, timeout=4)
                 text = recognizer.recognize_google(audio)
                 print("CMD: " + text)
-                notification.notify("CMD:... ", text, timeout=1.2)
+                notification.notify("Command: ", text, timeout=2.2)
                 thread = threading.Thread(target=run_cmd, args=(text,))
                 thread.start()
             except sr.WaitTimeoutError as e:
@@ -144,40 +106,13 @@ def on_press(i):
                 print(e)
             except Exception as e:
                 print(e)
-            notification.notify("Free ...", "Waiting ...", timeout=1, toast=True)
+            notification.notify("Free 🆓", "Waiting ...", timeout=1, toast=True)
 
 
+text_to_speech.sayAndWait("Hello Sir! I am Your Virtual Assistant")
+thread = threading.Thread(target=Send_Achinya_started_email.send_stated_email)
+thread.start()
 
-text_to_speech.sayAndWait("Hello Sir!")
 with keyboard.Listener(on_press=on_press) as listener:
     listener.join()
-
-
-# with microphone as mic:
-#     while True:
-#         print("You can speak now, we are listening in background")
-#         print("🚩 " * 36)
-#         audio = recognizer.listen(mic, phrase_time_limit=5)
-#         try:
-#             text = recognizer.recognize_google(audio)
-#             print("CMD: " + text)
-#             thread = threading.Thread(target=run_cmd, args=(text,))
-#             thread.start()
-#         except sr.UnknownValueError as e:
-#             print("*" * 50)
-#             print("can not recognize")
-#             print(e)
-#             print("*" * 50)
-#         except sr.RequestError as e:
-#             text_to_speech.sayAndWait("No Internet Connection")
-#         except sr.WaitTimeoutError as e:
-#             print("*" * 50)
-#             text_to_speech.sayAndWait("Slow Internet Connection")
-#             print(e)
-#             print("*" * 50)
-#         except socket.timeout as e:
-#             text_to_speech.sayAndWait("Slow Internet Connection")
-#             print(e)
-
-# welcome()
 
